@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import EmailVerificationSerializer, RegisterSerializer
+from .serializers import EmailVerificationSerializer, LoginSerializer, RegisterSerializer
 from .renderers import UserRenderer
 from .models import User
 from .utils import Util
@@ -52,7 +52,7 @@ class VerifyEmail(views.APIView):
     def get(self, request):
         token = request.GET.get('token')
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True
@@ -62,3 +62,14 @@ class VerifyEmail(views.APIView):
             return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginAPIView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        
