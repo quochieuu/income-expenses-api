@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
     'rest_framework',
     'drf_yasg',
     'authentication',
@@ -50,6 +51,7 @@ SWAGGER_SETTINGS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -76,6 +78,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'incomeexpensesapi.wsgi.application'
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "https://relaxed-curie-e9a516.netlify.app",
+    "http://127.0.0.1:8080"
+]
+
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^https://\w+\.netlify\.app$",
+]
 
 
 # Database
